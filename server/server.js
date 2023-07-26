@@ -4,6 +4,8 @@ const http = require("http");
 require("dotenv").config();
 // i can use env variables
 
+
+
 const app = express();
 
 const typeDefs = `
