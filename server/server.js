@@ -5,6 +5,8 @@ const http = require("http");
 require("dotenv").config();
 // i can use env variables
 
+const mongoose = require("mongoose");
+
 const path = require("path");
 const { makeExecutableSchema } = require("graphql-tools");
 const { mergeTypeDefs, mergeResolvers } = require("@graphql-tools/merge");
@@ -12,16 +14,27 @@ const { loadFilesSync } = require("@graphql-tools/load-files");
 
 const app = express();
 
+// db
+const db = async () => {
+  try {
+    // try connect to mongodb
+    const success = await mongoose.connect(process.env.DATABASE_CLOUD);
+    console.log("DB Connected");
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+//execute database connection - important!!
+db();
+
 const typeDefs = mergeTypeDefs(
   loadFilesSync(path.join(__dirname, "./typeDefs"))
 );
 
-const resolvers = {
-  Query: {
-    totalPosts: () => 42,
-    me: () => "Kate did this"
-  }
-}
+const resolvers = mergeResolvers(
+  loadFilesSync(path.join(__dirname, "./resolvers"))
+);
 
 let apolloServer = null;
 async function startServer() {
