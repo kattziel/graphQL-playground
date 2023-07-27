@@ -10,10 +10,12 @@ const allPosts = () => posts;
 // mutation
 const newPost = (parent, args) => {
   console.log(args);
+  const {title, description} = args.input;
   const post = {
     id: posts.length + 1,
-    title: args.title,
-    description: args.description,
+    title,
+    description
+    // ...args.input - we could even use here spread operator for the args
   };
   posts.push(post);
   return post;
